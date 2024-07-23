@@ -1,17 +1,20 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req } from '@nestjs/common';
 import { AccountService } from './account.service';
+import { Request } from 'express';
 
 @Controller('account')
 export class AccountController {
     constructor(private readonly accountService: AccountService){}
 
-    @Get('balance/:id')
-    getBalance(@Param('id') id: string) {
-        return this.accountService.getBalance(+id);
+    @Get('balance')
+    getBalance(@Req() req: Request) {
+        const user = req['user'];
+        return this.accountService.getBalance(user.sub);
     }
 
     @Post('transfer')
-    transferFund(@Body() userDetails) {
-        return this.accountService.transferFund(userDetails.from, userDetails.to, userDetails.amount);
+    transferFund(@Req() req: Request, @Body() userDetails) {
+        const user = req['user'];
+        return this.accountService.transferFund(user.sub, userDetails.to, userDetails.amount);
     }
 }

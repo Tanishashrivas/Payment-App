@@ -1,12 +1,14 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AccountModule } from './account/account.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 import { User } from './user/entities/user.entity';
 import { Account } from './account/entities/account.entity';
+import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -30,8 +32,18 @@ import { Account } from './account/entities/account.entity';
   }),
   inject: [ConfigService],
     }),
-     UserModule, AccountModule],
+     UserModule, AccountModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+      consumer
+      .apply(AuthMiddleware)
+        .forRoutes(
+          { path: 'user', method: RequestMethod.PATCH },
+          { path: 'account/balance', method: RequestMethod.GET },
+          { path: 'account/transfer', method: RequestMethod.POST },
+      )
+  }
+}
