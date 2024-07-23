@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Payment-App
 =======
 <p align="center">
@@ -75,3 +76,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](LICENSE).
 >>>>>>> f450426 (initial commit)
+=======
+
+>>>>>>> origin/main
